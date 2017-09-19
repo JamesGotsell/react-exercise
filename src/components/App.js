@@ -5,9 +5,9 @@ import NavDrawer from './layout/NavDrawer'
 import { spacing, typography } from 'material-ui/styles'
 import withWidth, { LARGE } from 'material-ui/utils/withWidth'
 import { Route, Switch } from 'react-router-dom'
-
-import UserList from './user/UserList'
-import WorkshopList from './workshop/WorkshopList'
+import UserListContainer from './user/UserListContainer'
+import  WorkshopContainer from './workshop/WorkshopContainer'
+// import WorkshopList from './workshop/WorkshopList'
 import Dashboard from './dashboard'
 import NotFound from './NotFound'
 import Login from './Login'
@@ -79,11 +79,10 @@ class App extends Component {
         <div className="view-container" style={styles.app}>
           <Switch>
             <Route exact path="/" component={Dashboard} />
-            <Route path="/users" component={UserList} />
+            <Route path="/users" component={UserListContainer} />
             <Route path="/login" component={Login} />
-            <Route render={({ location }) => (
-                <h3>Page not found <code>{location.pathname}</code></h3>
-              )} />
+            <Route path="/workshops" component={WorkshopContainer}/>
+            <Route component={NotFound} />
           </Switch>
         </div>
       </div>

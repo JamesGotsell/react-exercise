@@ -11,23 +11,8 @@ import View from '../layout/View'
 import UserProfile from './UserProfile'
 
 class UserList extends Component {
-  constructor() {
-    super()
-    this.state = {
-      users: []
-    }
-  }
-
-  componentDidMount() {
-    fetch('/data/users.js', {
-        method: 'get'
-    }).then((response) => {
-        return response.json()
-    }).then((data) => {
-        this.setState({ users: data })
-    }).catch((err)=> {
-        console.log(err)
-    })
+  constructor(props) {
+    super(props)
   }
 
   showUserProfile(user) {
@@ -35,12 +20,11 @@ class UserList extends Component {
   }
 
   render() {
-    const { match, width } = this.props
-    
+    const { match, width , users } = this.props
     return (
       <View style={{ display: 'flex' }}>
         <View>
-          { this.state.users.map(user => (
+          { users.map(user => (
             <ListItem
               onClick={this.showUserProfile.bind(this, user)} key={user.username} style={{color: "black"}}
               primaryText={ `${user.name.first} ${user.name.last}`}
@@ -56,7 +40,12 @@ class UserList extends Component {
 }
 
 export default withWidth()(UserList)
-
+UserList.PropTypes = {
+    match: PropTypes.object.isRequired,
+    width: PropTypes.string.isRequired,
+    users: PropTypes.object.isRequired
+}
 UserList.contextTypes = {
-  router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired,
+
 }
