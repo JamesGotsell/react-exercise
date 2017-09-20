@@ -13,7 +13,6 @@ const UserProfile = ({ user }) => {
   let username = ''
 
   if (user){
-    
     fullname = `${user.name.title} ${user.name.first} ${user.name.last}`
     email = user.email
     username = user.username
@@ -23,8 +22,8 @@ const UserProfile = ({ user }) => {
     <View>
       <Card>
         <CardHeader
-          title={fullname='book'}
-          subtitle={username='boom'}
+          title={fullname}
+          subtitle={username}
           avatar={`/images/${username}_sm.jpg`}
         />
         <CardMedia
@@ -38,8 +37,8 @@ const UserProfile = ({ user }) => {
   )
 }
 
-UserProfile.propTypes = {
-  user: PropTypes.object.isRequired
-}
+// UserProfile.propTypes = {
+//   user: PropTypes.object.isRequired
+// }
 
 export default UserProfile

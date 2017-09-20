@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+
 import WorkshopList from './WorkshopList'
+import withWidth from 'material-ui/utils/withWidth'
+import { fetchWorkshops } from '../../api/workshop'
 
 
-class Workshop extends Component {
+class WorkshopListContainer extends Component {
     constructor() {
         super();
         this.state = {
@@ -13,15 +15,11 @@ class Workshop extends Component {
     }
 
     componentDidMount() {
-        fetch('/data/workshops.js', {
-            method: 'get'
-        }).then((response) => {
-            return response.json()
-        }).then((data) => {
+        fetchWorkshops().then((data) => {
             this.setState({ workshops: data })
-        }).catch((err)=> {
+          }).catch((err)=> {
             console.log(err)
-        })
+          })
     }
 
     render() {
@@ -38,8 +36,6 @@ class Workshop extends Component {
     }
 }
 
-export default Workshop
+export default withWidth()(WorkshopListContainer)
 
-Workshop.contextTypes = {
-    router: PropTypes.object.isRequired
-}
+

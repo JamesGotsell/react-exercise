@@ -1,42 +1,58 @@
-import React, { Component } from 'react'
-import WorkshopInfoContainer from './WorkshopInfoContainer'
-import View from '../layout/View'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { ListItem } from 'material-ui/List'
 import ActionGrade from 'material-ui/svg-icons/action/grade'
 import { pinkA200 } from 'material-ui/styles/colors'
-import withWidth from 'material-ui/utils/withWidth'
-import { Route } from 'react-router-dom'
+import { LARGE } from 'material-ui/utils/withWidth'
+import { Route, Switch, withRouter } from 'react-router-dom'
 
+import View from '../layout/View'
+import WorkshopInfoContainer from './WorkshopInfoContainer'
 
+const WorkshopList = ({ workshops = [], match, history, width}) => {
+  const showWorkshop = (workshop) => {
+    history.push(`/workshops/${workshop.id}`)
+  }
+  console.log(workshops, match, history, width)
+  let listItems
 
-class WorkshopList extends Component {
-    constructor(props) {
-        super(props)
-    }
+  if (workshops.length === 0) {
+    listItems = <View>Loading...</View>
+  } else {
+    listItems = (
+      <View>
+        { workshops.map(workshop => (
+          <ListItem
+            onClick={() => { showWorkshop(workshop) }} key={workshop.id} style={{color: "black"}}
+            primaryText={ `${workshop.title}`}
+            leftIcon={<ActionGrade color={pinkA200} />}
+          />
+        ))}
+      </View>
+    )
+  }
 
-    showWorkShop(workshop) {
-        this.props.history.push(`/workshops/${workshop.title}`)
-      }
-
-
-    render() {
-        console.log(this.props.workshops)
-        const { workshops , match } = this.props;
-        return (
-          <View style={{ display: 'flex' }}>
-            <View>
-              { workshops.map(workshop => (
-                <ListItem
-                  onClick={this.showWorkShop.bind(this, workshop)} key={workshop.id} style={{color: "black"}}
-                  primaryText={ `${workshop.title}`}
-                  leftIcon={<ActionGrade color={pinkA200} />}
-                />
-              ))}
-            </View>
-            <Route path={`${match.url}/:workshop`} component={WorkshopInfoContainer} />
-          </View>
-        )
-      }
+  return (
+    <View style={{ display: 'flex' }}>
+      <Route
+        exact={width < LARGE}
+        path={`${match.url}`}
+        render={() => listItems }
+      />
+      <Switch>
+        <Route path={`${match.url}/:workshop`} component={WorkshopInfoContainer} />
+        <Route exact path={width < LARGE ? `/` : null} component={View} />
+      </Switch>
+    </View>
+  )
 }
 
 export default WorkshopList
+
+
+WorkshopList.propTypes = {
+  history: PropTypes.object.isRequired,
+  workshops: PropTypes.array.isRequired,
+  width: PropTypes.number.isRequired,
+  match: PropTypes.object.isRequired
+}

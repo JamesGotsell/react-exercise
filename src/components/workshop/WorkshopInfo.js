@@ -1,40 +1,44 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import React from 'react'
 import {
-    Card, CardActions, CardHeader, CardMedia, CardTitle, CardText
+  Card, CardActions, CardHeader,
+  CardTitle
 } from 'material-ui/Card'
+import FlatButton from 'material-ui/FlatButton'
+import PropTypes from 'prop-types'
 
-import View from '../layout/View'
+const WorkshopInfo = ({ workshop }) => {
+  let instructors = ''
+  let title = ''
+  let button = ''
 
-class Info extends Component {
-    constructor(props) {
-        super()
-        
-    }
-    render() {
-        console.log(this.props)
-        // const { title , price   } = this.props
-        return (
-            <View>
-                <Card>
-                    <CardHeader
-                      
-                     
-                    />
-                     <CardTitle  />
-                       <CardText>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-    </CardText>
-                    <CardActions />
-                </Card>
-            </View>
-        )
-    }
+  if (workshop) {
+    instructors = workshop.instructors.map((instructor, index) => (
+      <CardHeader
+        key={index}
+        title={instructor.name}
+        subtitle={instructor.url}
+        avatar={instructor.avatar}
+      />
+    ))
+    title = `${workshop.title}  -  ${workshop.price}`
+    button = (<FlatButton label="Buy" href={workshop.url} />)
+  }
+
+  return (
+    <Card>
+      <CardTitle title={title} />
+      <CardTitle title="Instructors" />
+        {instructors}
+      <CardActions>
+        {button}
+      </CardActions>
+    </Card>
+  )
+}
+
+WorkshopInfo.PropTypes = {
+  workshop: PropTypes.object.isRequired
 }
 
 
-export default Info
+export default WorkshopInfo

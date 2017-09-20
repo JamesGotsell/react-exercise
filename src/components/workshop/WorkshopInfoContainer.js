@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import React, {Component} from 'react'
 import WorkShopInfo from './WorkShopInfo'
+import PropTypes from 'prop-types'
+import { fetchWorkshop } from '../../api/workshop'
 
 class WorkshopInfoContainer extends Component {
   constructor() {
@@ -10,38 +10,30 @@ class WorkshopInfoContainer extends Component {
   }
 
   componentDidMount() {
-    this.fetchWorkShop(this.props.match.params.workshop)
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.match.params.workshop !== nextProps.match.params.workshop) {
-      this.fetchWorkShop(nextProps.match.params.workshop)
-    }
+    this.fetchWorkshop(this.props.match.params.workshop)
   }
 
-  fetchWorkShop(workshop) {
-    fetch(`/data/workshops/${workshop}`, {
-        method: 'get'
-    }).then((response) => {
-        return response.json()
-    }).then((data) => {
-        console.log(data)
-        this.setState({workshop : data})
-        console.log(this.state.workshop + "*************************")
+  componentWillReceiveProps(nextProps) {
+   if (this.props.match.params.workshop !== nextProps.match.params.workshop) {
+     this.fetchWorkshop(nextProps.match.params.workshop)
+   }
+ }
+
+  fetchWorkshop = (workshop) => {
+    fetchWorkshop(workshop).then((data) => {
+      this.setState({workshop : data})
     }).catch((err)=> {
-        console.log(err)
+      console.log(err)
     })
   }
 
   render() {
-    //  let title = this.state.title
-    //  let price = this.state.price
-
     return (
-      <WorkShopInfo workshop={this.state.workshop} />
+      <WorkShopInfo
+        workshop={this.state.workshop}
+      />
     )
   }
-
-  
 }
 
 WorkshopInfoContainer.propTypes = {

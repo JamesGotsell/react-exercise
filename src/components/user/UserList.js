@@ -1,51 +1,60 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { ListItem } from 'material-ui/List'
 import ActionGrade from 'material-ui/svg-icons/action/grade'
 import Avatar from 'material-ui/Avatar'
 import { pinkA200 } from 'material-ui/styles/colors'
-import withWidth from 'material-ui/utils/withWidth'
-import { Route } from 'react-router-dom'
+import { LARGE } from 'material-ui/utils/withWidth'
+import { Route, Switch, withRouter } from 'react-router-dom'
 
 import View from '../layout/View'
-import UserProfile from './UserProfile'
+import UserProfileContainer from './UserProfileContainer'
 
-class UserList extends Component {
-  constructor(props) {
-    super(props)
+const UserList = ({ users = [], match, history, width }) => {
+  const showUserProfile = (user) => {
+    history.push(`/users/${user.username}`)
   }
 
-  showUserProfile(user) {
-    this.props.history.push(`/users/${user.username}`)
-  }
+  let listItems
 
-  render() {
-    const { match, width , users } = this.props
-    return (
-      <View style={{ display: 'flex' }}>
-        <View>
-          { users.map(user => (
-            <ListItem
-              onClick={this.showUserProfile.bind(this, user)} key={user.username} style={{color: "black"}}
-              primaryText={ `${user.name.first} ${user.name.last}`}
-              leftIcon={<ActionGrade color={pinkA200} />}
-              rightAvatar={<Avatar src={`images/${user.username}_sm.jpg`} />}
-            />
-          ))}
-        </View>
-        <Route path={`${match.url}/:username`} component={UserProfile} />
+  if (users.length === 0) {
+    listItems = <View>Loading...</View>
+  } else {
+    listItems = (
+      <View>
+        { users.map(user => (
+          <ListItem
+            onClick={() => { showUserProfile(user) }} key={user.username} style={{color: "black"}}
+            primaryText={ `${user.name.first} ${user.name.last}`}
+            leftIcon={<ActionGrade color={pinkA200} />}
+            rightAvatar={<Avatar src={`images/${user.username}_sm.jpg`} />}
+          />
+        ))}
       </View>
     )
   }
+
+  return (
+    <View style={{ display: 'flex' }}>
+      <Route
+        exact={width < LARGE}
+        path={`${match.url}`}
+        render={() => listItems }
+      />
+      <Switch>
+        <Route path={`${match.url}/:username`} component={UserProfileContainer} />
+        <Route exact path={width < LARGE ? `/` : null} component={View} />
+      </Switch>
+    </View>
+  )
 }
 
-export default withWidth()(UserList)
-UserList.PropTypes = {
-    match: PropTypes.object.isRequired,
-    width: PropTypes.string.isRequired,
-    users: PropTypes.object.isRequired
-}
-UserList.contextTypes = {
-  router: PropTypes.object.isRequired,
+export default UserList
 
+UserList.propTypes = {
+  users: PropTypes.array.isRequired,
+  history: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  width: PropTypes.number.isRequired
 }
+

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import { withRouter , match } from 'react-router-dom'
 import UserProfile from './UserProfile'
 import { fetchUser } from '../../api/user'
 
@@ -12,6 +12,12 @@ class UserProfileContainer extends Component {
 
   componentDidMount() {
     this.fetchUser(this.props.match.params.username)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.match.params.username !== nextProps.match.params.username) {
+      this.fetchUser(nextProps.match.params.username)
+    }
   }
 
   fetchUser = (username) =>  {
@@ -26,7 +32,7 @@ class UserProfileContainer extends Component {
     
     return (
       <UserProfile
-        user={this.state.user} stuff={'stuff'}
+        user={this.state.user} 
     />
     )
   }
@@ -35,5 +41,6 @@ class UserProfileContainer extends Component {
 UserProfileContainer.propTypes = {
   match: PropTypes.object.isRequired
 }
+
 
 export default UserProfileContainer
